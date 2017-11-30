@@ -5,14 +5,24 @@
 </template>
 
 <script>
-import {getUser} from '../API/index'
+import {getUserInfo} from '../API/serve'
+import {mapActions} from 'vuex'
 export default {
   created () {
     this.init()
   },
   methods: {
+    ...mapActions(['setUser', 'setRepo']),
     init () {
-      console.log(getUser)
+      getUserInfo()
+        .then(res => {
+          if (res.userName && res.repository) {
+            this.setUser(res.userName)
+            this.setRepo(res.repository)
+          } else {
+            this.$router.push({name: 'login'})
+          }
+        })
     }
   }
 }

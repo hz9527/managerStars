@@ -1,18 +1,19 @@
 <template lang="html">
   <div class="">
-    test
   </div>
 </template>
 
 <script>
 import {getUserInfo} from '../API/serve'
-import {mapActions} from 'vuex'
+import {mapGetters} from 'vuex'
 export default {
   created () {
     this.init()
   },
+  computed: {
+    ...mapGetters(['getList'])
+  },
   methods: {
-    ...mapActions(['setUser', 'setRepo']),
     init () {
       getUserInfo()
         .then(res => {

@@ -1,6 +1,23 @@
 @import './rule.scss';
-body, html {
+body, html, #app {
   height: 100%;
+  color: $mainColor;
+}
+.hz-page {
+  height: 100%;
+  display: flex;
+}
+.hz-aside, .hz-content {
+  height: 100%;
+  overflow: auto;
+}
+.hz-aside {
+  flex-grow: 0;
+  width: 300px;
+}
+.hz-content {
+  flex-grow: 1;
+  background: #ccc;
 }
 .hz-modal-bg {
   position: fixed;
@@ -15,11 +32,23 @@ body, html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 20px;
   border-radius: 5px;
   background: #fff;
 }
 
+.hz-img {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 4px solid $border;
+  overflow: hidden;
+  img {
+    width: 80px;
+  }
+}
 .hz-btn-full {
   width: 100%;
-  
+
 }

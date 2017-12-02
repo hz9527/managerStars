@@ -2,6 +2,7 @@
 body, html, #app {
   height: 100%;
   color: $mainColor;
+  font-size: $mainSize;
 }
 .hz-page {
   height: 100%;
@@ -15,10 +16,10 @@ body, html, #app {
   flex-grow: 0;
   flex-shrink: 0;
   width: 300px;
+  border-right: 1px solid $border;
 }
 .hz-content {
   flex-grow: 1;
-  background: #ccc;
 }
 .hz-modal-bg {
   position: fixed;
@@ -48,6 +49,29 @@ body, html, #app {
   img {
     width: 80px;
   }
+}
+// btn
+.hz-btn-full, .hz-btn-s, .hz-btn-m, .hz-btn-b {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.hz-btn-s, .hz-btn-m, .hz-btn-b {
+  display: inline-block;
+}
+// line btn
+.hz-btn-s {
+  padding: 3px 5px;
+  color: $main;
+  &:hover {
+    color: #fff;
+    background: $main;
+  }
+}
+
+// full btn
+.hz-btn-s {
+  display: inline-block;
+  border: 1px solid $main;
 }
 .hz-btn-full {
   width: 100%;

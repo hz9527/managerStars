@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="">
+  <div class="content">
     <item v-for='item in getList' :data='item' :key='item.id' />
   </div>
 </template>
@@ -18,4 +18,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.content {
+  height: 100%;
+  overflow: auto;
+}
 </style>

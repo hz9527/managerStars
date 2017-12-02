@@ -2,7 +2,7 @@
   <div class="hz-page">
     <hz-aside class='hz-aside' />
     <div class="hz-content">
-      <ctrl-panel />
+      <ctrl-panel class="panel" />
       <hz-content />
     </div>
   </div>
@@ -48,4 +48,12 @@ export default {
 </script>
 
 <style lang="scss">
+.hz-content {
+  display: flex;
+  flex-direction: column;
+}
+.panel {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 </style>

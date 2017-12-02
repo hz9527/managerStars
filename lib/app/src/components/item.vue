@@ -24,7 +24,12 @@
       <div class="item-desc">{{data.description}}</div>
     </div>
     <div class="item-right">
+      <div class="tips">
 
+      </div>
+      <div class="desc">
+        <textarea name="name" rows="8" cols="80"></textarea>
+      </div>
     </div>
   </div>
 </template>
@@ -35,6 +40,10 @@ export default {
     data: {
       type: Object,
       default: {}
+    },
+    type: {
+      type: String,
+      default: 'prod'
     }
   }
 }
@@ -77,6 +86,5 @@ export default {
   }
 }
 .item-right {
-  background: #f55;
 }
 </style>

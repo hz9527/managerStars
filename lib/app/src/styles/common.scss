@@ -4,6 +4,11 @@ body, html, #app {
   color: $mainColor;
   font-size: $mainSize;
 }
+input {
+  outline: 0;
+  width: 100px;
+  padding: 3px 5px;
+}
 .hz-page {
   height: 100%;
   display: flex;
@@ -55,12 +60,13 @@ body, html, #app {
   cursor: pointer;
   border-radius: 4px;
 }
-.hz-btn-s, .hz-btn-m, .hz-btn-b {
+.hz-btn-s, .hz-btn-m {
   display: inline-block;
 }
+.hz-btn-b, .hz-btn-full {display: block;}
 // line btn
-.hz-btn-s {
-  padding: 3px 5px;
+.hz-btn-s, .hz-btn-b {
+  border: 1px solid $main;
   color: $main;
   &:hover {
     color: #fff;
@@ -69,14 +75,29 @@ body, html, #app {
 }
 
 // full btn
-.hz-btn-s {
-  display: inline-block;
-  border: 1px solid $main;
+.hz-btn-m, .hz-btn-full {
+  background: $main;
+  color: #fff;
+  &:hover {
+    background: $mainHover;
+  }
 }
-.hz-btn-full {
-  width: 100%;
 
+// style of btn
+.hz-btn-s {
+  padding: 3px 5px 2px 5px;
 }
+.hz-btn-m {
+  padding: 5px 10px;
+}
+.hz-btn-b, .hz-btn-full {
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 5px 0;
+}
+
+
 .hz-ellipsis {
   overflow: hidden;
   white-space: nowrap;

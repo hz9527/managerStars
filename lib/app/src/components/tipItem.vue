@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="tip" v-show='state !=="hide"'>
+  <div class="tip" v-show='state !=="hide" && show'>
     <input type="text" ref='input'
       :disabled='type === "prod" || state !== "edit"' placeholder='请输入tip名' />
     <div class="btn-con" v-if='type === "dev"'>
@@ -19,18 +19,30 @@ export default {
       type: String,
       default: 'prod'
     },
+    show: {
+      type: Boolean,
+      default: true
+    },
     data: Object // {name id counts}
   },
   data () {
     return {
-      state: this.data.id === -1 ? 'edit' : 'normal' // normal edit loading hide
+      state: 'normal' // normal edit loading hide
+    }
+  },
+  watch: {
+    show (v) {
+      if (v) {
+        this.state = 'edit'
+        this.$refs.input.value = ''
+        this.$nextTick(() => {
+          this.$refs.input.focus()
+        })
+      }
     }
   },
   mounted () {
     this.$refs.input.value = this.data.name
-    if (this.data.id === -1) {
-      this.$refs.input.focus()
-    }
   },
   methods: {
     clickFirst () {

@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="hz-page">
-    <hz-aside class='hz-aside' />
+    <hz-aside type='dev' class='hz-aside' />
     <div class="hz-content">
-      <ctrl-panel class="panel" />
-      <hz-content />
+      <ctrl-panel type='dev' class="panel" />
+      <hz-content type='dev' />
     </div>
   </div>
 </template>

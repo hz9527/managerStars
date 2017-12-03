@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="content">
-    <item v-for='item in getList' :data='item' :key='item.id' @change='changeItem' />
+    <item :type='type' v-for='item in getList' :data='item' :key='item.id' @change='changeItem' />
   </div>
 </template>
 
@@ -8,6 +8,12 @@
 import {mapGetters, mapMutations} from 'vuex'
 import Item from './item'
 export default {
+  props: {
+    type: {
+      type: String,
+      default: 'prod'
+    }
+  },
   computed: {
     ...mapGetters(['getList'])
   },

@@ -27,7 +27,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: 'dev'
+      default: 'prod'
     }
   },
   data () {

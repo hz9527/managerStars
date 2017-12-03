@@ -41,9 +41,8 @@ export default {
     keyWord () {
       search(this.search)
     },
-    getAllTips (v) {
+    getAllTips (list, oldList) {
       this.search()
-      this.$emit('tipListChange', v.map(item => item.id))
     },
     ignoreList (v) {
       this.search()
@@ -53,8 +52,7 @@ export default {
     choose (e) {
       if ('id' in e.target.dataset) {
         let id = e.target.dataset.id
-        let item = this.list.find(info => info.id === id)
-        this.$emit('choose', item)
+        this.$emit('choose', id)
       }
     },
     search () {

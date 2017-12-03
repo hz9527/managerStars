@@ -29,13 +29,12 @@
         <div class="hz-btn-m" @click='cancelBtn' v-show='state !=="normal"'>取消</div>
       </div>
       <div class="tips">
-        <tip :data='tip' :type='"edit"' v-for='tip in data.tips' :key='tip.id' />
-        <tip :data='tip' :type='"edit"' v-for='tip in addList' :key='tip.id' />
-        <add-tip @choose='add' :show='hasAdd && state !== "normal"' :ignoreList='allTips' @tipListChange='tipChange' />
+        <tip :data='tip' :type='"edit"' v-for='tip in allList' :key='tip.id' />
+        <add-tip @choose='add' :show='hasAdd && state !== "normal"' :ignoreList='allTipIds' />
         <div class="hz-btn-s" v-show='state !== "normal"' @click='addBtn'>{{hasAdd ? '取消' : '添加'}}</div>
       </div>
       <div class="desc">
-        <textarea ref='text'></textarea>
+        <textarea ref='text' :disabled='state !== "edit"'></textarea>
       </div>
     </div>
   </div>
@@ -45,6 +44,7 @@
 import Tip from './tip'
 import AddTip from './search'
 import {editItem} from '../API/serve'
+import {mapGetters} from 'vuex'
 export default {
   props: {
     data: {
@@ -60,12 +60,30 @@ export default {
     return {
       state: 'normal', // normal edit loading
       hasAdd: false,
+      delList: [], // all in data.tips
       addList: []
     }
   },
   computed: {
-    allTips () {
-      return this.data.tips.concat(this.addList).map(item => item.id)
+    ...mapGetters(['getAllTips']),
+    allTipIds () {
+      let delSet = new Set(this.delList)
+      return this.data.tips.filter(id => !delSet.has(id)).concat(this.addList)
+    },
+    allList () {
+      if (this.allTipIds.length === 0) {
+        return []
+      }
+      return this.getAllTips.filter(item => this.allTipIds.some(id => id === item.id))
+    }
+  },
+  watch: {
+    getAllTips (v) {
+      let list = v.map(item => item.id)
+      if (new Set(list.concat(this.addList)).size > v.length) {
+        let set = new Set(list)
+        this.addList = this.addList.filter(id => set.has(id))
+      }
     }
   },
   mounted () {
@@ -82,14 +100,9 @@ export default {
     },
     cancelBtn () {
       if (this.state === 'edit') {
-        this.addList = []
+        this.resetChange()
         this.$refs.text.value = this.data.desc
         this.state = 'normal'
-      }
-    },
-    tipChange (list) {
-      if (this.addList.some(item => !list.find(id => item.id === id))) {
-        this.addList = this.addList.filter(item => list.find(id => item.id === id))
       }
     },
     addBtn () {
@@ -97,11 +110,11 @@ export default {
         this.hasAdd = !this.hasAdd
       }
     },
-    add (data) {
+    add (id) {
       this.hasAdd = false
-      let List = this.data.tips.concat(this.addList)
-      if (!List.some(tipId => tipId === data.id)) {
-        this.addList.push(data)
+      if (!this.allTipIds.some(tipId => tipId === id)) {
+        this.addList.push(id)
+        this.hasAdd = false
       } else {
         // toast
       }
@@ -110,10 +123,9 @@ export default {
       let sendData = JSON.parse(JSON.stringify(this.data))
       let text = this.$refs.text.value.trim()
       let change = false
-      if (this.addList.length > 0) {
+      if (this.allTipIds.toString() !== this.data.tips.toString()) {
         change = true
-        sendData.tips.push(...this.addList)
-        sendData.tips = sendData.tips.map(item => item.id)
+        sendData.tips = this.allTipIds.slice()
       }
       if (text !== this.data.desc) {
         change = true
@@ -126,10 +138,8 @@ export default {
       this.state = 'loading'
       editItem(sendData)
         .then(() => {
-          this.state = 'edit'
-          if (this.addList.length > 0) {
-            this.addList = []
-          }
+          this.state = 'normal'
+          this.resetChange()
           this.$emit('change', sendData)
         })
         .catch(err => {
@@ -138,10 +148,16 @@ export default {
           if (text !== this.data.desc) {
             this.$refs.text.value = this.data.desc
           }
-          if (this.addList.length > 0) {
-            this.addList = []
-          }
+          this.resetChange()
         })
+    },
+    resetChange () {
+      if (this.addList.length > 0) {
+        this.addList = []
+      }
+      if (this.delList.length > 0) {
+        this.delList = []
+      }
     }
   },
   components: {

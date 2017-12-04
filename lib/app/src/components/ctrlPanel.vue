@@ -1,14 +1,18 @@
 <template lang="html">
   <div class="panel">
     <div class="action">
-      <!-- choose -->
+      <choose :choose='getTotalCount === getChooseCount && getChooseCount > 0' @toggle='toggleChoose' />
       {{getTotalCount}}
+      {{getChooseCount}}
+      <batch-tip @save='editTips("addTips", $event)' />
+      <batch-tip @save='editTips("delTips", $event)' />
+      <batch-tip @save='editTips("editTips", $event)' />
     </div>
     <div class="filter">
-      <div class="tab-con">
-        <div :class="['tab-item', getTab === 0 ? 'tab-active' : '']">全部</div>
-        <div :class="['tab-item', getTab === 1 ? 'tab-active' : '']">已有tip</div>
-        <div :class="['tab-item', getTab === 2 ? 'tab-active' : '']">无tip</div>
+      <div class="tab-con" @click='chooseTab'>
+        <div data-ind='0' :class="['tab-item', getTab === 0 ? 'tab-active' : '']">全部</div>
+        <div data-ind='1' :class="['tab-item', getTab === 1 ? 'tab-active' : '']">已有tip</div>
+        <div data-ind='2' :class="['tab-item', getTab === 2 ? 'tab-active' : '']">无tip</div>
       </div>
       <div class="search-con">
         <input type="text" ref='keyWord' />
@@ -26,6 +30,11 @@
 <script>
 import {mapGetters, mapMutations, mapActions} from 'vuex'
 import HzSelect from './select'
+import Choose from './radio'
+import BatchTip from './batchTip'
+import {Bus} from '../vueUtil/index'
+import {getBatchResult} from '../utils/dealBatch'
+import {listSaveTips} from '../API/serve'
 const SortConf = [
   {id: 0, name: 'star时间'},
   {id: 1, name: 'issues数'},
@@ -45,15 +54,21 @@ export default {
     return {
       chooseLang: 0,
       chooseSort: 0,
-      sortList: SortConf
+      sortList: SortConf,
+      curChoose: false
     }
   },
   computed: {
-    ...mapGetters(['getTab', 'getTotalCount', 'getChooseCount', 'getLangList'])
+    ...mapGetters(['getTab', 'getTotalCount', 'getChooseList', 'getChooseCount', 'getLangList', 'getAllList'])
   },
   methods: {
-    ...mapMutations(['setKeyWord', 'setLang', 'setSort', 'chooseAll', 'unChooseAll']),
-    ...mapActions(['chooseTab']),
+    ...mapMutations(['setKeyWord', 'setLang', 'setSort', 'unChooseAll', 'listSaveTips']),
+    ...mapActions(['changeTab', 'chooseAll']),
+    chooseTab (e) {
+      if ('ind' in e.target.dataset) {
+        this.changeTab(Number(e.target.dataset.ind))
+      }
+    },
     chooseSel (type, ind) {
       if (type === 'lang') {
         this.chooseLang = ind
@@ -62,9 +77,42 @@ export default {
         this.chooseSort = ind
         this.setSort(this.sortList[ind].id)
       }
+    },
+    toggleChoose (v) {
+      if (v) {
+        this.chooseAll()
+      } else {
+        this.unChooseAll()
+      }
+      Bus.$emit('changeChoose', v)
+    },
+    editTips (type, data) {
+      if (this.getChooseCount > 0) {
+        this.saveTips(type, data)
+      } else {
+        // toast
+      }
+    },
+    saveTips (type, tips) {
+      let set = new Set(this.getChooseList)
+      let result = getBatchResult(type, tips, this.getAllList.filter(item => set.has(item.id)))
+      if (result.length === 0) {
+        // toast nothing to save
+      } else {
+        listSaveTips(result)
+          .then(() => {
+            Bus.$emit(type, tips)
+            this.listSaveTips(result)
+          })
+          .catch(err => console.log(err))
+      }
     }
   },
-  components: {HzSelect}
+  components: {
+    HzSelect,
+    Choose,
+    BatchTip
+  }
 }
 </script>
 

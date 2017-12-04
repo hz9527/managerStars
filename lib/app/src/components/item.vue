@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="item">
-    <div class="item-first"></div>
+  <div class="item" v-show='data.show'>
+    <div class="item-first"><choose :choose='curChoose' @toggle='toggleChoose'/></div>
     <div class="item-left">
       <div class="item-name">
         <span class="hz-ellipsis">{{data.name}}</span>
@@ -29,7 +29,7 @@
         <div class="hz-btn-m" @click='cancelBtn' v-show='state !=="normal"'>取消</div>
       </div>
       <div class="tips">
-        <tip :data='tip' :type='"edit"' v-for='tip in allList' :key='tip.id' />
+        <tip :data='tip' :type='"edit"' v-for='tip in allList' :key='tip.id' @delTip='delTip' />
         <add-tip @choose='add' :show='hasAdd && state !== "normal"' :ignoreList='allTipIds' />
         <div class="hz-btn-s" v-show='state !== "normal"' @click='addBtn'>{{hasAdd ? '取消' : '添加'}}</div>
       </div>
@@ -44,7 +44,9 @@
 import Tip from './tip'
 import AddTip from './search'
 import {editItem} from '../API/serve'
-import {mapGetters} from 'vuex'
+import Choose from './radio'
+import {mapGetters, mapMutations} from 'vuex'
+import {Bus} from '../vueUtil/index'
 export default {
   props: {
     data: {
@@ -61,7 +63,8 @@ export default {
       state: 'normal', // normal edit loading
       hasAdd: false,
       delList: [], // all in data.tips
-      addList: []
+      addList: [],
+      curChoose: false
     }
   },
   computed: {
@@ -74,22 +77,70 @@ export default {
       if (this.allTipIds.length === 0) {
         return []
       }
-      return this.getAllTips.filter(item => this.allTipIds.some(id => id === item.id))
+      let map = new Map(this.getAllTips.map(item => [item.id, item.name]))
+      // return this.getAllTips.filter(item => this.allTipIds.some(id => id === item.id))
+      return this.allTipIds.map(id => {
+        return {
+          id,
+          name: map.get(id)
+        }
+      })
     }
   },
   watch: {
-    getAllTips (v) {
-      let list = v.map(item => item.id)
-      if (new Set(list.concat(this.addList)).size > v.length) {
-        let set = new Set(list)
-        this.addList = this.addList.filter(id => set.has(id))
+    // getAllTips (v) {
+    //   let list = v.map(item => item.id)
+    //   if (new Set(list.concat(this.addList)).size > v.length) { // 还未考虑 delList，当然无所谓，因为对外都是allList
+    //     let set = new Set(list)
+    //     this.addList = this.addList.filter(id => set.has(id))
+    //   }
+    // },
+    data (v) {
+      if (!v.show && this.curChoose) {
+        this.curChoose = false
+        // set choose
+        this.chooseItem(this.data.id)
       }
     }
+  },
+  created () {
+    Bus.$on('changeChoose', v => {
+      this.curChoose = v
+    })
+    Bus.$on('delTip', id => {
+      var ind = this.addList.findInde(tid => tid === id)
+      if (ind > -1) {
+        this.addList.splice(ind, 1)
+      } else {
+        ind = this.delList.findInde(tid => tip === id)
+        if (ind > -1) {
+          this.delList.splice(ind, 1)
+        }
+      }
+    })
+    Bus.$on('addTips', list => {
+      this.dealBatch('addTips', list)
+    })
+    Bus.$on('delTips', list => {
+      this.dealBatch('delTips', list)
+    })
+    Bus.$on('editTips', list => {
+      this.dealBatch('editTips', list)
+    })
   },
   mounted () {
     this.$refs.text.value = this.data.desc
   },
+  beforeDestroy () {
+    Bus.$off()
+  },
   methods: {
+    ...mapMutations(['chooseItem']),
+    toggleChoose (v) {
+      this.curChoose = v
+      // set choose
+      this.chooseItem(this.data.id)
+    },
     editBtn () {
       if (this.state === 'normal') {
         this.state = 'edit'
@@ -113,10 +164,22 @@ export default {
     add (id) {
       this.hasAdd = false
       if (!this.allTipIds.some(tipId => tipId === id)) {
-        this.addList.push(id)
-        this.hasAdd = false
+        var ind = this.delList.findIndex(tid => tid === id)
+        if (ind === -1) {
+          this.addList.push(id)
+        } else {
+          this.delList.splice(ind, 1)
+        }
       } else {
         // toast
+      }
+    },
+    delTip (id) {
+      var ind = this.addList.findIndex(tid => tid === id)
+      if (ind === -1) {
+        this.delList.push(id)
+      } else {
+        this.addList.splice(ind, 1)
       }
     },
     save () {
@@ -158,11 +221,45 @@ export default {
       if (this.delList.length > 0) {
         this.delList = []
       }
+    },
+    dealBatch (type, list) { // if addTips del addList item if delTips del delList if editTips checkall
+      if (this.curChoose && this.state === 'edit') {
+        let set = new Set(list)
+        let result
+        if (type === 'addTips') {
+          if (this.addList.length > 0) {
+            result = this.needChange(this.addList, set)
+            if (result) this.addList = result
+          }
+        } else if (type === 'delTips') {
+          if (this.delList.length > 0) {
+            result = this.needChange(this.delList, set)
+            if (result) this.delList = result
+          }
+        } else if (type === 'editTips') { // if some in add del if some not in del del
+          if (this.addList.length > 0) {
+            result = this.needChange(this.addList, set)
+            if (result) this.addList = result
+          }
+          if (this.delList.length > 0) {
+            result = this.needChange(this.delList, set, true)
+            if (result) this.delList = result
+          }
+        }
+      }
+    },
+    needChange (list, set, value = false) {
+      let result = list.filter(id => set.has(id) === value)
+      if (result.length === list.length) {
+        return false
+      }
+      return result
     }
   },
   components: {
     AddTip,
-    Tip
+    Tip,
+    Choose
   }
 }
 </script>

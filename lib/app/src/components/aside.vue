@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="aside">
-    <div class="content">
+    <div class="content" @click='chooseTip'>
       <tip-item :data='allTips' />
       <tip-item :type='type' :data='item' v-for='item in getTips'
        :key='item.id' @del='delItem' @save='saveItem' />
@@ -23,6 +23,7 @@
 <script>
 import {mapGetters, mapMutations} from 'vuex'
 import TipItem from './tipItem'
+import {Bus} from '../vueUtil/index'
 export default {
   props: {
     type: {
@@ -48,6 +49,9 @@ export default {
   },
   methods: {
     ...mapMutations(['addTip', 'delTip', 'setTip', 'listDelTips']),
+    chooseTip () {
+      console.log(123)
+    },
     addItem () {
       if (this.addState) {
         // toast
@@ -60,6 +64,7 @@ export default {
       if (id === -1) {
         this.addState = 0
       } else {
+        Bus.$on('delTip', id)
         // 删除所有带该 id star tip
         var list = this.getAllList.filter(item => item.tips.some(tid => tid === id))
           .map(item => item.id)

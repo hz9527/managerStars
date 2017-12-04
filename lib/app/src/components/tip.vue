@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="tip">
     {{data.name}}
-    <b :data-tip='data.id' v-show='type === "edit"'>del</b>
+    <b :data-tip='data.id' v-show='type === "edit"' @click='delTip'>del</b>
   </div>
 </template>
 
@@ -13,6 +13,11 @@ export default {
       default: 'disable' // disable edit
     },
     data: Object
+  },
+  methods: {
+    delTip () {
+      this.$emit('delTip', this.data.id)
+    }
   }
 }
 </script>

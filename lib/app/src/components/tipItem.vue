@@ -3,8 +3,8 @@
     <input type="text" ref='input'
       :disabled='type === "prod" || state !== "edit"' placeholder='请输入tip名' />
     <div class="btn-con" v-if='type === "dev"'>
-      <div class="hz-btn-s" @click='clickFirst'>{{state === 'normal' ? '编辑' : '取消'}}</div>
-      <div class="hz-btn-s" @click='clickLast'>{{state === 'normal' ? '删除' : '保存'}}</div>
+      <div class="hz-btn-s" @click.stop='clickFirst'>{{state === 'normal' ? '编辑' : '取消'}}</div>
+      <div class="hz-btn-s" @click.stop='clickLast'>{{state === 'normal' ? '删除' : '保存'}}</div>
     </div>
     <b>{{data.counts}}</b>
   </div>
@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     clickFirst () {
+      console.log('first')
       if (this.state === 'normal') {
         this.edit()
       } else if (this.state === 'edit') {

@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="tip" v-show='state !=="hide" && show'>
+  <div :class="['tip', data.id === this.getCurTip ? 'action' : '']" v-show='state !=="hide" && show' @click='changeTip'>
     <input type="text" ref='input'
       :disabled='type === "prod" || state !== "edit"' placeholder='请输入tip名' />
     <div class="btn-con" v-if='type === "dev"'>
@@ -13,6 +13,7 @@
 <script>
 // 为方便数据回退，保存及删除网络请求全部交由组件处理，当修改数据成功才通知父组件来更新Store
 import {addTip, setTip, delTip} from '../API/serve'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   props: {
     type: {
@@ -41,12 +42,22 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getCurTip'])
+  },
   mounted () {
     this.$refs.input.value = this.data.name
   },
   methods: {
+    ...mapActions(['chooseTip']),
+    changeTip (e) {
+      if (!(this.state !== 'normal' && e.target.nodeName === 'INPUT' && this.data.id !== -1)) {
+        if (this.data.id !== this.getCurTip) {
+          this.chooseTip(this.data.id)
+        }
+      }
+    },
     clickFirst () {
-      console.log('first')
       if (this.state === 'normal') {
         this.edit()
       } else if (this.state === 'edit') {
@@ -127,6 +138,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.action {
+  background: #f55;
+}
 .btn-con {
   display: inline-block;
 }

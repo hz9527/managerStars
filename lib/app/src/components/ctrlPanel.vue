@@ -16,6 +16,7 @@
       </div>
       <div class="search-con">
         <input type="text" ref='keyWord' />
+        <div class="hz-btn-m" @click='search'>搜索</div>
       </div>
       <div class="lang-con">
         <hz-select :list='getLangList' @choose='chooseSel("lang", $event)' :choose='chooseLang'/>
@@ -68,6 +69,11 @@ export default {
       if ('ind' in e.target.dataset) {
         this.changeTab(Number(e.target.dataset.ind))
       }
+    },
+    search () {
+      let kw = this.$refs.keyWord.value.trim()
+      console.log(kw)
+      kw && this.setKeyWord(kw)
     },
     chooseSel (type, ind) {
       if (type === 'lang') {

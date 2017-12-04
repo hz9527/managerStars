@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="aside">
-    <div class="content" @click='chooseTip'>
+    <div class="content">
       <tip-item :data='allTips' />
       <tip-item :type='type' :data='item' v-for='item in getTips'
        :key='item.id' @del='delItem' @save='saveItem' />
@@ -49,9 +49,6 @@ export default {
   },
   methods: {
     ...mapMutations(['addTip', 'delTip', 'setTip', 'listDelTips']),
-    chooseTip () {
-      console.log(123)
-    },
     addItem () {
       if (this.addState) {
         // toast

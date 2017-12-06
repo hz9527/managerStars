@@ -1,10 +1,12 @@
 <template lang="html">
   <div class="aside">
     <div class="content">
-      <tip-item :data='allTips' />
-      <tip-item :type='type' :data='item' v-for='item in getTips'
-       :key='item.id' @del='delItem' @save='saveItem' />
-      <tip-item type='dev' :data='addTem' :show='addState === 1' @del='delItem' @save='saveItem' />
+      <div class="tip-con">
+        <tip-item :data='allTips' />
+        <tip-item :type='type' :data='item' v-for='item in getTips'
+         :key='item.id' @del='delItem' @save='saveItem' />
+        <tip-item type='dev' :data='addTem' :show='addState === 1' @del='delItem' @save='saveItem' />
+      </div>
       <div v-if='type === "dev"' class="add-tip hz-btn-b" @click='addItem'>添加标签</div>
     </div>
     <div class="footer">
@@ -96,6 +98,9 @@ export default {
   flex-grow: 1;
   overflow: auto;
   padding: 20px 0;
+  .tip-con {
+    border-bottom: 1px solid $border;
+  }
   .add-tip {
     margin-top: 20px;
   }
@@ -104,5 +109,12 @@ export default {
   flex-grow: 0;
   padding: 10px 0 30px;
   border-top: 1px solid $border;
+  .info {
+    text-align: center;
+    span:last-child {
+      line-height: 30px;
+      margin-left: 5px;
+    }
+  }
 }
 </style>

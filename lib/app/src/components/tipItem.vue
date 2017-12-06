@@ -138,9 +138,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.action {
-  background: #f55;
+@import '../styles/rule.scss';
+.tip {
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid $border;
+  &:hover {
+    color: $mainHover;
+    input[disabled] {
+      color: $mainHover;
+    }
+  }
 }
+.action {
+  color: $main;
+  input {
+    color: $main;
+  }
+}
+
 .btn-con {
   display: inline-block;
 }

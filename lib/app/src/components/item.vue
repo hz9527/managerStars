@@ -8,18 +8,18 @@
         <div class="hz-btn-s">复制git地址</div>
       </div>
       <div class="item-base">
-        作者: <span>{{data.owner}}</span>
-        默认分支: <span>{{data.default_branch}}</span>
-        主要语言: <span>{{data.language}}</span>
+        <div class="item-label-con hz-ellipsis">作者: <span>{{data.owner}}</span></div>
+        <div class="item-label-con hz-ellipsis">默认分支: <span>{{data.default_branch}}</span></div>
+        <div class="item-label-con hz-ellipsis">主要语言: <span>{{data.language ? 'data.language' : '无'}}</span></div>
       </div>
       <div class="item-info">
-        forks: <span>{{data.forks}}</span>
-        stars: <span>{{data.watchers}}</span>
-        open_issues: <span>{{data.open_issues}}</span>
+        <div class="item-label-con hz-ellipsis">forks: <span>{{data.forks}}</span></div>
+        <div class="item-label-con hz-ellipsis">stars: <span>{{data.watchers}}</span></div>
+        <div class="item-label-con hz-ellipsis">open_issues: <span>{{data.open_issues}}</span></div>
       </div>
       <div class="item-time">
-        created_at: <span>{{data.created_at | time}}</span>
-        updated_at: <span>{{data.updated_at | time}}</span>
+        <div class="item-label-con hz-ellipsis">created_at: <span>{{data.created_at | time}}</span></div>
+        <div class="item-label-con hz-ellipsis">updated_at: <span>{{data.updated_at | time}}</span></div>
       </div>
       <div class="item-desc">{{data.description}}</div>
     </div>
@@ -271,6 +271,7 @@ export default {
   margin: 5px;
   border-bottom: 1px solid $border;
   padding: 5px 0;
+  padding-left: 10px;
 }
 .item-left, .item-right {
   width: 50%;
@@ -280,9 +281,14 @@ export default {
   flex-shrink: 0;
 }
 .item-first {
-  width: 5%;
+  width: 3%;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid $border;
+  margin-right: 20px;
 }
 .item-left {
+  overflow: hidden;
   .item-name {
     padding: 5px;
     display: flex;
@@ -296,14 +302,34 @@ export default {
       font-size: $titSize;
     }
   }
+  .item-base, .item-info, .item-time {
+    line-height: 2;
+    display: flex;
+    justify-content: space-around;
+  }
+  .item-label-con {
+    flex-grow: 1;
+    text-align: left;
+  }
   .item-desc {
     color: $infoColor;
   }
 }
 .item-right {
   padding: 0 20px;
+  .edit {
+    padding: 0 10px 10px 0;
+    text-align: right;
+  }
+  .tips {
+    margin: 10px 0;
+  }
   .desc textarea {
+    box-sizing: border-box;
     width: 100%;
+    resize: none;
+    padding: 5px;
+    border: 1px solid $border;
   }
 }
 </style>

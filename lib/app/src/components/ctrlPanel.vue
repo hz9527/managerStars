@@ -1,12 +1,13 @@
 <template lang="html">
-  <div class="panel">
+  <div class="ctrl-panel">
     <div class="action">
       <choose :choose='getTotalCount === getChooseCount && getChooseCount > 0' @toggle='toggleChoose' />
-      {{getTotalCount}}
-      {{getChooseCount}}
-      <batch-tip @save='editTips("addTips", $event)' />
-      <batch-tip @save='editTips("delTips", $event)' />
-      <batch-tip @save='editTips("editTips", $event)' />
+      <div class="counts">
+        {{getTotalCount}} / {{getChooseCount}}
+      </div>
+      <batch-tip class='brach-tip' @save='editTips("addTips", $event)' />
+      <batch-tip class='brach-tip' @save='editTips("delTips", $event)' />
+      <batch-tip class='brach-tip' @save='editTips("editTips", $event)' />
     </div>
     <div class="filter">
       <div class="tab-con" @click='chooseTab'>
@@ -15,13 +16,13 @@
         <div data-ind='2' :class="['tab-item', getTab === 2 ? 'tab-active' : '']">无tip</div>
       </div>
       <div class="search-con">
-        <input type="text" ref='keyWord' />
+        <input type="text" ref='keyWord' placeholder='请输入关键字'/>
         <div class="hz-btn-m" @click='search'>搜索</div>
       </div>
-      <div class="lang-con">
+      <div class="sel-con">
         <hz-select :list='getLangList' @choose='chooseSel("lang", $event)' :choose='chooseLang'/>
       </div>
-      <div class="sort-con">
+      <div class="sel-con">
         <hz-select :list='sortList' @choose='chooseSel("sort", $event)' :choose='chooseSort'/>
       </div>
     </div>
@@ -123,7 +124,62 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tab-active {
-  color: #f55;
+@import '../styles/rule.scss';
+.ctrl-panel {
+  background: #eee;
+  margin: 20px 20px 20px 0;
+  padding: 15px 0 15px 10px;
+}
+.action {
+  display: flex;
+  align-items: flex-start;
+  .counts {
+    margin: 0 20px 0 10px;
+  }
+  .brach-tip {
+    margin-left: 20px;
+  }
+}
+.filter {
+  display: flex;
+  margin: 20px 0 0;
+  padding-left: 20px;
+  align-items: flex-start;
+  .tab-con {
+    margin-right: 30px;
+    display: flex;
+    height: 30px;
+    line-height: 30px;
+    .tab-item {
+      padding: 0 20px;
+      border: 1px solid $border;
+      cursor: pointer;
+      &:hover {
+        color: $main;
+      }
+      &:first-child {
+        border-right: 0;
+      }
+      &:last-child {
+        border-left: 0;
+      }
+    }
+    .tab-active {
+      color: #fff;
+      background: $main;
+      border-color: $main;
+      &:hover {
+        color: #fff;
+        background: $mainHover;
+        border-color: $mainHover;
+      }
+    }
+  }
+  .search-con {
+    margin-right: 30px;
+  }
+  .sel-con {
+    margin: 0 20px 0 10px;
+  }
 }
 </style>

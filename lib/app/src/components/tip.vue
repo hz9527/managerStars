@@ -25,5 +25,11 @@ export default {
 <style lang="scss" scoped>
 .tip {
   display: inline-block;
+  padding: 3px 5px;
+  margin: 0 5px 0 0;
+  background: #f55;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 12px;
 }
 </style>

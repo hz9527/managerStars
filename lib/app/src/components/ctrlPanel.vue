@@ -73,7 +73,6 @@ export default {
     },
     search () {
       let kw = this.$refs.keyWord.value.trim()
-      console.log(kw)
       kw && this.setKeyWord(kw)
     },
     chooseSel (type, ind) {
@@ -98,6 +97,7 @@ export default {
         this.saveTips(type, data)
       } else {
         // toast
+        Bus.$emit('toast', '保存失败～')
       }
     },
     saveTips (type, tips) {
@@ -105,6 +105,7 @@ export default {
       let result = getBatchResult(type, tips, this.getAllList.filter(item => set.has(item.id)))
       if (result.length === 0) {
         // toast nothing to save
+        Bus.$emit('toast', '似乎不需要更改呀～')
       } else {
         listSaveTips(result)
           .then(() => {

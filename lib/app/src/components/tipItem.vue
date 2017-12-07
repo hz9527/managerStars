@@ -116,6 +116,7 @@ export default {
         }
       } else {
         // toast
+        Bus.$emit('toast', '好像有问题呢～')
       }
     },
     cancel () {

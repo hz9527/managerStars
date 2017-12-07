@@ -109,6 +109,7 @@ export default {
   width: 50%;
 }
 .item {
-
+  text-align: center;
+  padding: 10px 30px;
 }
 </style>

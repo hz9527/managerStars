@@ -1,12 +1,17 @@
 <template>
   <div id="app">
+    <toast/>
     <router-view/>
   </div>
 </template>
 
 <script>
+import Toast from './components/toast'
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    Toast
+  }
 }
 </script>
 

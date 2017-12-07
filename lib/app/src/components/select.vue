@@ -1,6 +1,8 @@
 <template lang="html">
   <div class="select">
-    <div class="choose" @click='toggle'>{{curName}}</div>
+    <div class="choose" @click='toggle'>
+      <span>{{curName}}</span> <b :class='["arrow", showList ? "hz-arrow-top" : "hz-arrow-bottom"]'></b>
+    </div>
     <div class="choose-con" v-show='showList' @click='chooseItem'>
       <div class="item" :data-ind='ind' v-for='(item, ind) in curList' :key='item.key'>{{item.name}}</div>
     </div>
@@ -69,12 +71,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/rule.scss';
 .select {
   display: inline-block;
-  width: 100px;
-  border: 1px solid #f55;
+  width: 150px;
+  border: 1px solid $border;
   position: relative;
   text-align: center;
+  cursor: pointer;
+}
+.choose {
+  padding: 3px 10px;
+  display: flex;
+  align-items: center;
+  &:hover {
+    color: $main;
+    .arrow {border-color: $main;}
+  }
+  span {
+    flex: 1;
+  }
+  b {
+    margin-top: -2px;
+  }
 }
 .choose-con {
   position: absolute;
@@ -84,21 +103,24 @@ export default {
   max-height: 300px;
   margin: 1px 0 0 -1px;
   overflow-y: auto;
-  background: #fff;
-  border: 1px solid #f55;
+  background: $selectBg;
+  border: 1px solid $border;
   border-top: 0;
-  cursor: pointer;
   z-index: 100;
+  &::-webkit-scrollbar {
+    display:none;
+  }
 }
 .item {
-  padding: 0 3px;
-  border-bottom: 1px solid #f55;
-  position: relative;
+  padding: 10px 0;
+  border-bottom: 1px solid $border;
+  transition: 0.3s;
   &:last-child {
     border: 0;
   }
   &:hover {
-    top: -2px;
+    transform: translate(0, -2px);
+    color: $main;
   }
 }
 </style>

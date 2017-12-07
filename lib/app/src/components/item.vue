@@ -172,6 +172,7 @@ export default {
         }
       } else {
         // toast
+        Bus.$emit('toast', '好像有问题呢～')
       }
     },
     delTip (id) {
@@ -196,6 +197,7 @@ export default {
       }
       if (!change) {
         // toast
+        Bus.$emit('toast', '我咋看着没啥变化呢，那么问题来了，你要改啥？')
         return
       }
       this.state = 'loading'

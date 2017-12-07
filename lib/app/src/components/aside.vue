@@ -17,7 +17,7 @@
         <span>{{getUser}}</span>
         <span>{{getRepo}}</span>
       </div>
-      <div class="hz-btn-full">切换用户</div>
+      <div class="hz-btn-full" @click='() => $router.push({name: "login"})'>切换用户</div>
     </div>
   </div>
 </template>
@@ -54,6 +54,7 @@ export default {
     addItem () {
       if (this.addState) {
         // toast
+        Bus.$emit('toast', '添加失败～')
       } else {
         this.addState = 1
       }

@@ -59,6 +59,7 @@ export default {
       } else {
         if (this.btnDis) {
           // toast
+          Bus.$emit('toast', '不能继续添加啦～')
         } else {
           this.hasAdd = true
         }
@@ -72,6 +73,7 @@ export default {
         this.$emit('save', this.list)
       } else {
         // toast
+        Bus.$emit('toast', '你要干嘛？')
       }
     }
   },
@@ -84,6 +86,6 @@ export default {
 
 <style lang="scss" scoped>
 .panel {
-  
+
 }
 </style>

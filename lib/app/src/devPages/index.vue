@@ -30,7 +30,7 @@ export default {
             // get tips & list
             Promise.all([getTipList(), getList()])
               .then(resList => {
-                this.setInitValue({key: 'allTips', value: resList[0]})
+                // this.setInitValue({key: 'allTips', value: resList[0]})
                 this.setInitValue({key: 'allList', value: resList[1]})
               })
           } else {

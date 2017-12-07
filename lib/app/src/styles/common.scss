@@ -105,9 +105,25 @@ input[disabled] {
   padding: 5px 0;
 }
 
-
 .hz-ellipsis {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.hz-arrow {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid $border;
+  border-right: 1px solid $border;
+  vertical-align: middle;
+  &-top {
+    @extend .hz-arrow;
+    transform: rotate(-45deg);
+  }
+  &-bottom {
+    @extend .hz-arrow;
+    transform: rotate(135deg);
+  }
 }
